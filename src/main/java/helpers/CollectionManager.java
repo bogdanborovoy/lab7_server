@@ -1,12 +1,12 @@
 package helpers;
 
-import classes.*;
+import models.*;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 import commands.Command;
-import exceptions.WrongFileNameException;
 
 import java.io.*;
+import java.sql.*;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -21,7 +21,7 @@ public class CollectionManager implements Serializable {
     /**
      * Компаратор для сравнения элементов коллекции по ID.
      */
-    static class IDComparator implements Comparator<SpaceMarine>, Serializable {
+    public static class IDComparator implements Comparator<SpaceMarine>, Serializable {
         /**
          * Сравнивает два объекта SpaceMarine по их ID.
          *
@@ -196,25 +196,90 @@ public class CollectionManager implements Serializable {
         spaceMarines.clear();
     }
 
+//    /**
+//     * Сохраняет коллекцию в файл.
+//     *
+//     * @param spaceMarines Коллекция космических десантников
+//     */
+//    public void save(NavigableSet<SpaceMarine> spaceMarines) {
+//        //export SAVE_IN="/home/studs/s465267/lab5/files/spacemarines.csv"
+//        String fileName = "/Users/bogdanborovoy/Desktop/lab7_server/src/main/resources/files/spacemarines.csv";
+//        try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName))) {
+//            for (SpaceMarine spaceMarine : spaceMarines) {
+//                bw.write(spaceMarine.toString());
+//                bw.newLine();
+//            }
+//            //System.out.println("Коллекция сохранена в файл " + fileName);
+//        } catch (IOException e) {
+//            System.out.println(e.getMessage());
+//            System.out.println("Файл не найден");
+//        }
+//        catch (NullPointerException e) {
+//            System.out.println("Файл не указан");
+//        }
+//    }
     /**
-     * Сохраняет коллекцию в файл.
+     * Сохраняет коллекцию в базу данных.
      *
-     * @param spaceMarines Коллекция космических десантников
+     * @param serverCollection Коллекция космических десантников
      */
-    public void save(NavigableSet<SpaceMarine> spaceMarines) {
-        //export SAVE_IN="/home/studs/s465267/lab5/files/spacemarines.csv"
-        String fileName = "/Users/bogdanborovoy/Desktop/lab6/server/src/main/resources/files/spacemarines.csv";
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName))) {
-            for (SpaceMarine spaceMarine : spaceMarines) {
-                bw.write(spaceMarine.toString());
-                bw.newLine();
+    public void save(HashMap<String, TreeSet<SpaceMarine>> serverCollection){
+        try {
+
+            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/studs", "s465267", "xUaQIKx4AivXYHbx");
+            Statement truncate = connection.createStatement();
+            truncate.executeUpdate("truncate table spacemarines");
+            truncate.close();
+            Statement resetSequence = connection.createStatement();
+            resetSequence.executeUpdate("ALTER SEQUENCE SpaceMarinesIdSeq RESTART WITH 1");
+            resetSequence.close();
+            for (String username : serverCollection.keySet()) {
+                var collection = serverCollection.get(username);
+                if (collection == null) {
+                    continue;
+                }
+                Statement statement = connection.createStatement();
+                String query = "insert into spacemarines values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                PreparedStatement ps = connection.prepareStatement(query);
+
+                for (SpaceMarine spaceMarine : collection) {
+                    Statement getIdFromSequence = connection.createStatement();
+                    ResultSet resultSet = getIdFromSequence.executeQuery("SELECT nextval('SpaceMarinesIdSeq')");
+                    resultSet.next();
+
+
+                    ps.setLong(1, resultSet.getLong(1));
+                    ps.setString(2, spaceMarine.getName());
+                    ps.setInt(3, spaceMarine.getCoordinates().getX());
+                    ps.setInt(4, spaceMarine.getCoordinates().getY());
+                    ps.setTimestamp(5, Timestamp.from(spaceMarine.getCreationDate().toInstant()));
+                    ps.setDouble(6, spaceMarine.getHealth());
+                    ps.setInt(7, spaceMarine.getHeartCount());
+                    ps.setString(8, spaceMarine.getCategory().toString());
+                    ps.setString(9, spaceMarine.getMeleeWeapon().toString());
+                    ps.setString(10, spaceMarine.getChapter().getName());
+                    ps.setInt(11, spaceMarine.getChapter().getMarinesCount());
+                    ps.setString(12, username);
+                    ps.executeUpdate();
+                    ps.clearParameters();
+                }
+//                ResultSet resultSet = statement.executeQuery("select * from spacemarines");
+//                while (resultSet.next()) {
+//                    for (int i = 1; i < 12; i++) {
+//                        System.out.println(resultSet.getString(i));
+//
+//                    }
+//
+//                }
+                statement.close();
+                ps.close();
+
             }
-            //System.out.println("Коллекция сохранена в файл " + fileName);
-        } catch (IOException e) {
-            System.out.println("Файл не найден");
-        }
-        catch (NullPointerException e) {
-            System.out.println("Файл не указан");
+            connection.close();
+            //            String query = "insert into spacemarines values (id, 'kjdajdk', 2, 2, '2007-03-01', 2, 2, 'HELIX', 'MANREAPER', 'chapter', 2)";
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -343,5 +408,8 @@ public class CollectionManager implements Serializable {
                 .sorted()
                 .peek(health -> System.out.print(health + " ")).toList();
         return health_list;
+    }
+    public String showAllSpaceMarines(NavigableSet<SpaceMarine> spaceMarines) {
+        return show(spaceMarines);
     }
 }

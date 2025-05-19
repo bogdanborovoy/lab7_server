@@ -3,13 +3,10 @@ package users;
 import exceptions.UnsuitablePasswordException;
 import helpers.CollectionManager;
 import helpers.Invoker;
-import models.SpaceMarine;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.TreeSet;
 
 public class User {
     private final String username;

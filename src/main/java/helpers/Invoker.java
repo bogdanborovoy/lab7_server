@@ -34,7 +34,7 @@ public class Invoker implements Serializable {
         this.setCommand("count_greater_than_heart_count", new CountGreaterThanHeartCountCommand(receiver));
         this.setCommand("filter_starts_with_name", new FilterStartsWithNameCommand(receiver));
         this.setCommand("print_field_ascending_health", new PrintFieldAscendingHealthCommand(receiver));
-
+        this.setCommand("show_all_space_marines",new ShowAllSpaceMarinesCommand(receiver));
     }
     /**
      * Словарь команд, где ключ — название команды, а значение — сама команда.

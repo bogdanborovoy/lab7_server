@@ -1,6 +1,6 @@
 package commands;
 
-import classes.SpaceMarine;
+import models.SpaceMarine;
 import helpers.CollectionManager;
 
 /**

@@ -1,6 +1,6 @@
 package commands;
 
-import classes.SpaceMarine;
+import models.SpaceMarine;
 
 import java.io.Serializable;
 

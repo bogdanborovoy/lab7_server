@@ -1,10 +1,12 @@
-package classes;
+package models;
+
 
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.UUID;
+
 
 /**
  * Класс Space Marine
@@ -99,7 +101,19 @@ public class SpaceMarine implements Serializable {
         this.setMeleeWeapon(meleeWeapon);
         this.setChapter(chapter);
     }
-
+    public SpaceMarine(long id, String name, Coordinates coordinates, ZonedDateTime creationDate,
+                       double health, int heartCount, AstartesCategory category,
+                       MeleeWeapon meleeWeapon, Chapter chapter) {
+        this.setId(id);
+        this.setName(name);
+        this.setCoordinates(coordinates);
+        this.setCreationDate(creationDate);
+        this.setHealth(health);
+        this.setHeartCount(heartCount);
+        this.setCategory(category);
+        this.setMeleeWeapon(meleeWeapon);
+        this.setChapter(chapter);
+    }
     /**
      * Возвращает уникальный идентификатор космического десантника.
      *
@@ -191,6 +205,9 @@ public class SpaceMarine implements Serializable {
             this.id = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
         }
     }
+    public void setId(long id) {
+        this.id = id;
+    }
 
     /**
      * Устанавливает имя космического десантника.
@@ -233,6 +250,9 @@ public class SpaceMarine implements Serializable {
         while (this.creationDate == null) {
             this.creationDate = ZonedDateTime.now();
         }
+    }
+    public void setCreationDate(ZonedDateTime creationDate) {
+        this.creationDate = creationDate;
     }
 
     /**

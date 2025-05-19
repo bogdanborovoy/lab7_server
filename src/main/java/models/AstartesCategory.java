@@ -1,4 +1,4 @@
-package classes;
+package models;
 
 /**
  * Перечисление типов космических десантников
@@ -8,28 +8,35 @@ public enum AstartesCategory {
     /**
      * Тактический десантник
      */
-    TACTICAL,
+    TACTICAL("TACTICAL"),
 
     /**
      * Терминатор
      */
-    TERMINATOR,
+    TERMINATOR("TERMINATOR"),
 
     /**
      * Капеллан
      */
-    CHAPLAIN,
+    CHAPLAIN("CHAPLAIN"),
 
     /**
      * Хеликс
      */
-    HELIX,
+    HELIX("HELIX"),
 
     /**
      * Аптекарь
      */
-    APOTHECARY;
-
+    APOTHECARY("APOTHECARY");
+    private final String name;
+    AstartesCategory(String name) {
+        this.name = name;
+    }
+    @Override
+    public String toString() {
+        return name;
+    }
     /**
      * Выводит все возможные значения перечисления AstartesCategory.
      */

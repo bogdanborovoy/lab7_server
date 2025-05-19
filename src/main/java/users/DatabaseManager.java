@@ -64,7 +64,6 @@ public class DatabaseManager {
                 Chapter chapter = new Chapter(chapterName, marinesCount);
                 String username = resultSet.getString("username");
                 SpaceMarine spaceMarine = new SpaceMarine(id, name, coordinates, creation_date, health, heartCount,  astartesCategory, meleeWeapon, chapter);
-                System.out.println(spaceMarine);
                 if (!spaceMarines.containsKey(username)) {
                     spaceMarines.put(username, new TreeSet<>(new CollectionManager.IDComparator()));
                     spaceMarines.get(username).add(spaceMarine);

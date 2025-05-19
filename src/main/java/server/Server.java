@@ -20,7 +20,7 @@ import java.util.*;
 
 public class Server {
     ServerSocket serverSocket;
-//    private ObjectOutputStream oos;
+    //    private ObjectOutputStream oos;
 //    private ObjectInputStream ois;
     CollectionManager cm;
     HashMap<String, TreeSet<SpaceMarine>> serverCollectionManager;
@@ -29,7 +29,7 @@ public class Server {
     Scanner scanner;
     private HashMap<String, User> users;
     User currentUser;
-//    private HashMap<User, Socket> userSockets = new HashMap<>();
+    //    private HashMap<User, Socket> userSockets = new HashMap<>();
     CollectionManager currentUserCollectionManager;
     TreeSet<SpaceMarine> currentUserSpaceMarines;
     private NavigableSet<SpaceMarine> allSpaceMarines;
@@ -57,8 +57,6 @@ public class Server {
 
     }
     public void sendObject(ObjectOutputStream oos, String message) throws IOException {
-        logger.info("Отправление ответа пользователю");
-
         Response response = new Response(message);
         oos.writeObject(response);
         oos.flush();

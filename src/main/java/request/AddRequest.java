@@ -1,6 +1,6 @@
 package request;
 
-import classes.*;
+import models.*;
 
 import java.io.Serializable;
 import java.util.NoSuchElementException;
